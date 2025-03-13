@@ -1,0 +1,41 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        Int        @id @default(autoincrement())
+  username  String     @unique
+  email     String     @unique
+  password  String
+  campaigns Campaign[]
+}
+
+model Campaign {
+  id          Int    @id @default(autoincrement())
+  name        String
+  description String
+  userId      Int
+  user        User   @relation(fields: [userId], references: [id])
+  npcs        NPC[]
+  notes       Note[]
+}
+
+model NPC {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+  campaignId  Int
+  campaign    Campaign @relation(fields: [campaignId], references: [id])
+}
+
+model Note {
+  id         Int      @id @default(autoincrement())
+  content    String
+  campaignId Int
+  campaign   Campaign @relation(fields: [campaignId], references: [id])
+}

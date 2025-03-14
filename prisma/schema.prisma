@@ -16,18 +16,33 @@ model User {
 }
 
 model Campaign {
-  id          Int    @id @default(autoincrement())
+  id          Int               @id @default(autoincrement())
   name        String
   description String
   userId      Int
-  user        User   @relation(fields: [userId], references: [id])
+  user        User              @relation(fields: [userId], references: [id])
+  pcs         PC[]
   npcs        NPC[]
   notes       Note[]
+  sessions    SessionRegister[]
+}
+
+model PC {
+  id          Int      @id @default(autoincrement())
+  name        String
+  level       Int
+  race        String
+  class       String
+  description String
+  campaignId  Int
+  campaign    Campaign @relation(fields: [campaignId], references: [id])
 }
 
 model NPC {
   id          Int      @id @default(autoincrement())
   name        String
+  race        String
+  class       String
   description String
   campaignId  Int
   campaign    Campaign @relation(fields: [campaignId], references: [id])
@@ -38,4 +53,13 @@ model Note {
   content    String
   campaignId Int
   campaign   Campaign @relation(fields: [campaignId], references: [id])
+}
+
+model SessionRegister {
+  id           Int      @id @default(autoincrement())
+  sessionCount Int
+  lastSession  DateTime
+  title        String
+  campaignId   Int
+  campaign     Campaign @relation(fields: [campaignId], references: [id])
 }

@@ -1,5 +1,5 @@
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -8,58 +8,60 @@ generator client {
 }
 
 model User {
-  id        Int        @id @default(autoincrement())
-  username  String     @unique
-  email     String     @unique
+  id        String   @id @default(cuid())
+  username  String   @unique
+  email     String   @unique
   password  String
-  campaigns Campaign[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  // campaigns Campaign[]
 }
 
-model Campaign {
-  id          Int               @id @default(autoincrement())
-  name        String
-  description String
-  userId      Int
-  user        User              @relation(fields: [userId], references: [id])
-  pcs         PC[]
-  npcs        NPC[]
-  notes       Note[]
-  sessions    SessionRegister[]
-}
+// model Campaign {
+//   id          String            @id @default(cuid())
+//   name        String
+//   description String
+//   userId      String
+//   user        User              @relation(fields: [userId], references: [id])
+//   pcs         PC[]
+//   npcs        NPC[]
+//   notes       Note[]
+//   sessions    SessionRegister[]
+// }
 
-model PC {
-  id          Int      @id @default(autoincrement())
-  name        String
-  level       Int
-  race        String
-  class       String
-  description String
-  campaignId  Int
-  campaign    Campaign @relation(fields: [campaignId], references: [id])
-}
+// model PC {
+//   id          String   @id @default(cuid())
+//   name        String
+//   level       Int
+//   race        String
+//   class       String
+//   description String
+//   campaignId  String
+//   campaign    Campaign @relation(fields: [campaignId], references: [id])
+// }
 
-model NPC {
-  id          Int      @id @default(autoincrement())
-  name        String
-  race        String
-  class       String
-  description String
-  campaignId  Int
-  campaign    Campaign @relation(fields: [campaignId], references: [id])
-}
+// model NPC {
+//   id          String   @id @default(cuid())
+//   name        String
+//   race        String
+//   class       String
+//   description String
+//   campaignId  String
+//   campaign    Campaign @relation(fields: [campaignId], references: [id])
+// }
 
-model Note {
-  id         Int      @id @default(autoincrement())
-  content    String
-  campaignId Int
-  campaign   Campaign @relation(fields: [campaignId], references: [id])
-}
+// model Note {
+//   id         String   @id @default(cuid())
+//   content    String
+//   campaignId String
+//   campaign   Campaign @relation(fields: [campaignId], references: [id])
+// }
 
-model SessionRegister {
-  id           Int      @id @default(autoincrement())
-  sessionCount Int
-  lastSession  DateTime
-  title        String
-  campaignId   Int
-  campaign     Campaign @relation(fields: [campaignId], references: [id])
-}
+// model SessionRegister {
+//   id           String   @id @default(cuid())
+//   sessionCount Int
+//   lastSession  DateTime
+//   title        String
+//   campaignId   String
+//   campaign     Campaign @relation(fields: [campaignId], references: [id])
+// }

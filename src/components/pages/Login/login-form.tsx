@@ -5,18 +5,34 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { LoginFormData, loginSchema } from "@/lib/schemas"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { signIn } from "next-auth/react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
+import { toast } from "sonner"
 
 export const LoginForm = () => {
-    const {register, handleSubmit} = useForm<LoginFormData>({
+    const router = useRouter();
+    const {
+        register, 
+        handleSubmit, 
+        formState: { errors }
+    } = useForm<LoginFormData>({
         resolver: zodResolver(loginSchema)
     })
-    const {push} = useRouter()
-    const login = (data: LoginFormData) => {
-        console.log(data)
-        return push('/')
+    const login = async (data: LoginFormData) => {
+        const result = await signIn('credentials', {
+            redirect: false,
+            email: data.email,
+            password: data.password,
+        });
+
+        if(result?.error) {
+            toast.error(result.error);
+        } else {
+            toast.success('Login successful!');
+            router.push('/dashboard');
+        }
     }
 
     return (
@@ -26,11 +42,11 @@ export const LoginForm = () => {
                 <Input 
                     id='email'
                     type="email" 
-                    placeholder="example@domain.com" 
+                    placeholder="example@domain.com"
+                    className='border-primary/30' 
                     {...register('email')}>
-
                 </Input>
-                
+                {errors.email && <span className="text-orange-600 text-sm">{errors.email.message}</span>}
             </div>
             <div>
                 <Label htmlFor="password" className="mb-2">Password</Label>
@@ -38,9 +54,10 @@ export const LoginForm = () => {
                     id='password' 
                     type="password" 
                     placeholder="Your Password"
+                    className='border-primary/30'
                     {...register('password')}>
-
-                    </Input>
+                </Input>
+                {errors.password && <span className="text-orange-600 text-sm">{errors.password.message}</span>}
             </div>
             <Button
                 type="submit"

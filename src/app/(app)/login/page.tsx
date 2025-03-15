@@ -9,7 +9,7 @@ export default function Login() {
                     <h2 className="mt-6 text-center text-3xl font-extrabold text-secondary">
                         Welcome back, Wanderer
                     </h2>
-                    <p className="text-center text-secondary/80 justify-center items-center">Take a rest and review your notes</p>
+                    <p className="text-center text-secondary/80 justify-center items-center">Enter your credentials to review your journals</p>
                     </div>
                     <LoginForm />
                 </div>

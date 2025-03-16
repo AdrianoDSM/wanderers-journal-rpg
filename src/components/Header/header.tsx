@@ -9,7 +9,7 @@ const Header: React.FC = ( ) => {
         <div className="container flex h-16 items-center justify-between">
           <div className="flex items-center gap-2">
             <ScrollText className="h-6 w-6 text-primary/60" />
-            <span className="text-xl font-bold tracking-wider text-foreground">Wanderers Journal</span>
+            <span className="text-xl font-bold tracking-wider text-secondary">Wanderers Journal</span>
           </div>
           <nav className="flex items-center gap-4 sm:gap-6">
             <Link

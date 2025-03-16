@@ -8,11 +8,13 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { signIn } from "next-auth/react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 
 export const LoginForm = () => {
     const router = useRouter();
+    const [isLoading, setIsLoading] = useState(false)
     const {
         register, 
         handleSubmit, 
@@ -21,17 +23,27 @@ export const LoginForm = () => {
         resolver: zodResolver(loginSchema)
     })
     const login = async (data: LoginFormData) => {
-        const result = await signIn('credentials', {
-            redirect: false,
+        setIsLoading(true)
+
+        try {
+        const result = await signIn("credentials", {
             email: data.email,
             password: data.password,
-        });
+            redirect: false,
+        })
 
-        if(result?.error) {
-            toast.error(result.error);
-        } else {
-            toast.success('Login successful!');
-            router.push('/dashboard');
+        if (result?.error) {
+            toast.error("Credenciais inválidas")
+            return
+        }
+
+        router.push("/dashboard")
+        toast.success("Login realizado com sucesso")
+        } catch (error) {
+        toast.error("Ocorreu um erro ao fazer login")
+        console.error(error)
+        } finally {
+        setIsLoading(false)
         }
     }
 
@@ -61,8 +73,9 @@ export const LoginForm = () => {
             </div>
             <Button
                 type="submit"
-                className="bg-primary/60 text-secondary text-center hover:bg-primary/90 hover:text-secondary/80">
-                    Sign In
+                className="bg-primary/60 text-secondary text-center hover:bg-primary/90 hover:text-secondary/80"
+                disabled={isLoading}>
+                    {isLoading ? 'Signing in...' :'Sign In'}
             </Button>
             <div className="text-center text-sm">
                 <span className="text-muted-foreground">Don&apos;t have an account? </span>

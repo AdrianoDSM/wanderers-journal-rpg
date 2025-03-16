@@ -10,9 +10,11 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { useState } from 'react';
 
 export const RegisterForm = () => {
     const router = useRouter()
+    const [isLoading, setIsLoading] = useState(false)
     const { 
         register,
         handleSubmit,
@@ -21,12 +23,15 @@ export const RegisterForm = () => {
         resolver: zodResolver(registerSchema)
     });
     const registerUser = async (data: RegisterFormData) => {
+        setIsLoading(true)
         try {
             await api.post('register', { json:data }).json()
             toast.success('Account registered successfully!')
             router.push('/login')
         } catch {
-            toast.error('Failed to register')
+            toast.error('Failed to register!')
+        } finally {
+            setIsLoading(false)
         }
     }
     return (
@@ -88,8 +93,9 @@ export const RegisterForm = () => {
             </div>
             <Button
                 type="submit"
-                className="bg-primary/60 text-secondary text-center hover:bg-primary/90 hover:text-secondary/80">
-                    Sign Up
+                className="bg-primary/60 text-secondary text-center hover:bg-primary/90 hover:text-secondary/80"
+                disabled={isLoading}>
+                    {isLoading ? 'Creating account...' :'Sign Up'}
             </Button>
             <div className="text-center text-sm">
                 <span className="text-muted-foreground">Already have an account? </span>
